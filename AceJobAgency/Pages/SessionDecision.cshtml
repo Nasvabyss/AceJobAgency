@@ -1,0 +1,13 @@
+﻿@page
+@model AceJobAgency.Pages.SessionDecisionModel
+@{
+    ViewData["Title"] = "Session Decision";
+}
+
+<h2>Active Session Detected</h2>
+<p>Another session is currently active. Would you like to end the other session and continue logging in here?</p>
+
+<form method="post">
+    <button type="submit" asp-page-handler="ContinueNewSession" class="btn btn-primary">Continue Here</button>
+    <button type="submit" asp-page-handler="KeepExistingSession" class="btn btn-secondary">Keep Existing Session</button>
+</form>

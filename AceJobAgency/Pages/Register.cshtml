@@ -1,0 +1,193 @@
+﻿@page
+@model AceJobAgency.Pages.RegisterModel
+@{
+    ViewData["Title"] = "Register";
+}
+
+<div class="container mt-5">
+    <div class="row justify-content-center align-items-center">
+        <div class="col-sm-12 col-md-12 col-lg-6">
+            <h1 class="mb-3">Register</h1>
+            <script src="https://www.google.com/recaptcha/api.js?render=@Model.SiteKey"></script>
+            <form id="register-form" method="post" enctype="multipart/form-data">
+                @Html.AntiForgeryToken()
+
+                <div class="mb-3">
+                    <label asp-for="RModel.FirstName" class="form-label">First Name</label>
+                    <input asp-for="RModel.FirstName" class="form-control" />
+                    <span asp-validation-for="RModel.FirstName" class="text-danger"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="RModel.LastName" class="form-label">Last Name</label>
+                    <input asp-for="RModel.LastName" class="form-control" />
+                    <span asp-validation-for="RModel.LastName" class="text-danger"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="RModel.Gender" class="form-label">Gender</label>
+                    <select asp-for="RModel.Gender" class="form-control">
+                        <option value="">Select Gender</option>
+                        <option value="Male">Male</option>
+                        <option value="Female">Female</option>
+                        <option value="Other">Other</option>
+                    </select>
+                    <span asp-validation-for="RModel.Gender" class="text-danger"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="RModel.NRIC" class="form-label">NRIC</label>
+                    <input asp-for="RModel.NRIC" class="form-control" />
+                    <span asp-validation-for="RModel.NRIC" class="text-danger"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="RModel.DateOfBirth" class="form-label">Date of Birth</label>
+                    <input type="date" asp-for="RModel.DateOfBirth" class="form-control" />
+                    <span asp-validation-for="RModel.DateOfBirth" class="text-danger"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="RModel.Email" class="form-label">Email Address</label>
+                    <input type="email" asp-for="RModel.Email" class="form-control" />
+                    <span asp-validation-for="RModel.Email" class="text-danger"></span>
+                </div>
+
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+                <div class="mb-3">
+                    <label asp-for="RModel.Password" class="form-label">Password</label>
+                    <input type="password" asp-for="RModel.Password" class="form-control" />
+                    <span asp-validation-for="RModel.Password" class="text-danger"></span>
+                    <div id="passwordStrengthBar" class="progress" style="height: 5px; margin-top: 5px;">
+                        <div id="passwordStrengthProgressBar" class="progress-bar" role="progressbar" style="width: 0%;"></div>
+                    </div>
+                    <span id="passwordStrengthText"></span>
+                </div>
+
+                <div id="passwordFeedback" class="mt-2">
+                    <ul>
+                        <li id="lengthCheck">At least 12 characters</li>
+                        <li id="upperCheck">At least one uppercase letter</li>
+                        <li id="lowerCheck">At least one lowercase letter</li>
+                        <li id="numberCheck">At least one number</li>
+                        <li id="specialCharCheck">At least one special character</li>
+                    </ul>
+                </div>
+
+
+                <div class="mb-3">
+                    <label asp-for="RModel.ConfirmPassword" class="form-label">Confirm Password</label>
+                    <input type="password" asp-for="RModel.ConfirmPassword" class="form-control" />
+                    <span asp-validation-for="RModel.ConfirmPassword" class="text-danger"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="RModel.Resume" class="form-label">Resume (.docx or .pdf)</label>
+                    <input type="file" asp-for="RModel.Resume" class="form-control" />
+                    <span asp-validation-for="RModel.Resume" class="text-danger"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="RModel.WhoAmI" class="form-label">Who Am I</label>
+                    <textarea asp-for="RModel.WhoAmI" class="form-control"></textarea>
+                    <span asp-validation-for="RModel.WhoAmI" class="text-danger"></span>
+                </div>
+
+                <!-- Hidden field for the reCAPTCHA token -->
+                <input type="hidden" asp-for="RecaptchaResponseRegister" />
+
+                <div class="mb-3">
+                    <button type="submit" class="btn btn-primary">Register</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+
+    <script>
+        grecaptcha.ready(function () {
+            document.getElementById('register-form').addEventListener('submit', function (event) {
+                event.preventDefault();
+                grecaptcha.execute('@Model.SiteKey', { action: 'register' }).then(function (token) {
+                    document.getElementById('RecaptchaResponseRegister').value = token;
+                    document.getElementById('register-form').submit();
+                });
+            });
+        });
+    </script>
+}
+
+<script>
+    document.getElementById('RModel_Password').addEventListener('input', function (e) {
+        var password = e.target.value;
+        var strengthText = document.getElementById('passwordStrengthText');
+        var progressBar = document.getElementById('passwordStrengthProgressBar');
+        var strength = 0;
+
+        // Check conditions and update UI
+        if (password.length >= 12) {
+            strength++;
+            document.getElementById('lengthCheck').style.color = 'green';
+        } else {
+            document.getElementById('lengthCheck').style.color = 'red';
+        }
+        if (/[A-Z]/.test(password)) {
+            strength++;
+            document.getElementById('upperCheck').style.color = 'green';
+        } else {
+            document.getElementById('upperCheck').style.color = 'red';
+        }
+        if (/[a-z]/.test(password)) {
+            strength++;
+            document.getElementById('lowerCheck').style.color = 'green';
+        } else {
+            document.getElementById('lowerCheck').style.color = 'red';
+        }
+        if (/[0-9]/.test(password)) {
+            strength++;
+            document.getElementById('numberCheck').style.color = 'green';
+        } else {
+            document.getElementById('numberCheck').style.color = 'red';
+        }
+        if (/[^A-Za-z0-9]/.test(password)) {
+            strength++;
+            document.getElementById('specialCharCheck').style.color = 'green';
+        } else {
+            document.getElementById('specialCharCheck').style.color = 'red';
+        }
+
+        // Update progress bar and strength text
+        var strengthPercentage = (strength / 5) * 100;
+        progressBar.style.width = strengthPercentage + '%';
+
+        switch (strength) {
+            case 0:
+            case 1:
+            case 2:
+                strengthText.textContent = 'Weak';
+                strengthText.style.color = 'red';
+                progressBar.className = 'progress-bar bg-danger';
+                break;
+            case 3:
+            case 4:
+                strengthText.textContent = 'Moderate';
+                strengthText.style.color = 'orange';
+                progressBar.className = 'progress-bar bg-warning';
+                break;
+            case 5:
+                strengthText.textContent = 'Strong';
+                strengthText.style.color = 'green';
+                progressBar.className = 'progress-bar bg-success';
+                break;
+        }
+    });
+
+</script>
+
+

@@ -1,0 +1,81 @@
+﻿@page
+@model AceJobAgency.Pages.LoginModel
+
+<h2>Login</h2>
+
+<script src="https://www.google.com/recaptcha/api.js?render=@Model.SiteKey"></script>
+<form id="login-form" method="post">
+    @Html.AntiForgeryToken()
+
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+    <div class="form-group">
+        <label asp-for="Input.Email">Email</label>
+        <input asp-for="Input.Email" class="form-control" />
+        <span asp-validation-for="Input.Email" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="Input.Password">Password</label>
+        <input asp-for="Input.Password" type="password" class="form-control" />
+        <span asp-validation-for="Input.Password" class="text-danger"></span>
+    </div>
+
+    <!-- Toast Notification for Other Active Sessions -->
+    <div id="otherSessionToast" class="toast align-items-center" role="alert" aria-live="assertive" aria-atomic="true">
+        <div class="toast-body">
+            Another session is currently active.
+        </div>
+    </div>
+
+
+    <!-- Hidden field for the reCAPTCHA token -->
+    <input type="hidden" asp-for="RecaptchaResponseLogin" />
+
+    <button type="submit" class="btn btn-primary">Login</button>
+</form>
+
+@section Scripts {
+
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+
+    @if (TempData["LockoutEndTime"] is string lockoutTime && !string.IsNullOrEmpty(lockoutTime))
+    {
+        <div class="alert alert-warning">
+            Your account is locked. Please try again in @lockoutTime minutes.
+        </div>
+    }
+
+    @if (TempData["AttemptsLeft"] is int attemptsLeft)
+    {
+        <div class="alert alert-warning">
+            You have @attemptsLeft attempt(s) left.
+        </div>
+    }
+
+
+
+    <script>
+        grecaptcha.ready(function () {
+            document.getElementById('login-form').addEventListener('submit', function (event) {
+                event.preventDefault();
+                grecaptcha.execute('@Model.SiteKey', { action: 'login' }).then(function (token) {
+                    document.getElementById('RecaptchaResponseLogin').value = token;
+                    document.getElementById('login-form').submit();
+                });
+            });
+        });
+
+        @if (TempData["ExistingSession"] as bool? == true)
+        {
+            <text>
+                // Show modal or toast for decision
+                // You can use Bootstrap modal or a custom dialog
+                // Include options to continue in this session or keep the existing one
+            </text>
+        }
+    </script>
+}
+

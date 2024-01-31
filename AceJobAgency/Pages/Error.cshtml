@@ -1,0 +1,14 @@
+﻿@model ErrorModel
+@{
+    ViewData["Title"] = "Error";
+}
+<h1>Error</h1>
+@if (Model.StatusCode == 404)
+{
+    <h2>404 - Page not found</h2>
+    <p>The page you are looking for might have been removed, had its name changed, or is temporarily unavailable.</p>
+}
+else
+{
+    <p>We're sorry, something went wrong.</p>
+}

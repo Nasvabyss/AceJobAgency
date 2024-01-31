@@ -1,0 +1,60 @@
+﻿@page
+@model IndexModel
+@{
+    ViewData["Title"] = "Home page";
+}
+
+<div class="text-center">
+    @if (Model.CurrentUser != null)
+    {
+        <h2>Welcome, @Model.CurrentUser.FirstName @Model.CurrentUser.LastName</h2>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Property</th>
+                    <th>Value</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Email</td>
+                    <td>@Model.CurrentUser.Email</td>
+                </tr>
+                <tr>
+                    <td>First Name</td>
+                    <td>@Model.CurrentUser.FirstName</td>
+                </tr>
+                <tr>
+                    <td>Last Name</td>
+                    <td>@Model.CurrentUser.LastName</td>
+                </tr>
+                <tr>
+                    <td>Gender</td>
+                    <td>@Model.CurrentUser.Gender</td>
+                </tr>
+                <tr>
+                    <td>Date of Birth</td>
+                    <td>@Model.CurrentUser.DateOfBirth.ToShortDateString()</td>
+                </tr>
+                <tr>
+                    <td>NRIC</td>
+                    <td>@Model.CurrentUser.NRIC</td>
+                </tr>
+                <tr>
+                    <td>Who Am I</td>
+                    <td>@Model.CurrentUser.WhoAmI</td>
+                </tr>
+
+            </tbody>
+        </table>
+    }
+    else
+    {
+        <p>User details not available.</p>
+    }
+</div>
+
+@if (!string.IsNullOrEmpty(Model.CurrentUser.Resume))
+{
+    <a href="@Url.Page("/DownloadResume", new { userId = Model.CurrentUser.Id })" class="btn btn-primary">Download Resume</a>
+}
